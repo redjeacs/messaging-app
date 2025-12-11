@@ -1,0 +1,62 @@
+const { body } = require("express-validator");
+const db = require("../db/queries");
+
+const emptyMsg = "is required";
+const length = "should be between 1 and 50 characters";
+const boolean = "has to be a true or false value";
+
+exports.signupValidator = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("username " + emptyMsg)
+    .isLength({ min: 1, max: 50 })
+    .withMessage("email " + length)
+    .isEmail()
+    .withMessage("email is not valid")
+    .custom(async (value) => {
+      const user = await db.getUser("email", value);
+      if (user) throw new Error("Email already exists");
+      else return true;
+    }),
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage("name " + emptyMsg)
+    .isLength({ min: 1, max: 50 })
+    .withMessage("name " + length)
+    .isAlpha()
+    .withMessage("name must be alphabetic characters only"),
+  body("password")
+    .trim()
+    .notEmpty()
+    .withMessage("password " + emptyMsg)
+    .isLength({ min: 1, max: 50 })
+    .withMessage("username " + length),
+  body("confirmPassword")
+    .trim()
+    .notEmpty()
+    .withMessage("password confirmation " + emptyMsg)
+    .custom((value, { req }) => {
+      if (value !== req.body.password)
+        throw new Error("Passwords do not match");
+      else return true;
+    }),
+];
+
+exports.signinValidator = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("email " + emptyMsg)
+    .isLength({ min: 1, max: 50 })
+    .withMessage("email " + length)
+    .isEmail()
+    .withMessage("email is not valid"),
+  body("password")
+    .trim()
+    .notEmpty()
+    .withMessage("password " + emptyMsg)
+    .isLength({ min: 1, max: 50 })
+    .withMessage("username " + length),
+];
