@@ -3,7 +3,6 @@ const db = require("../db/queries");
 
 const emptyMsg = "is required";
 const length = "should be between 1 and 50 characters";
-const boolean = "has to be a true or false value";
 
 exports.signupValidator = [
   body("email")

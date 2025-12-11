@@ -27,7 +27,13 @@ export function SignupForm({ ...props }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
+      console.log("Signup data:", {
+        name: e.target.name.value,
+        email: e.target.email.value,
+        password: e.target.password.value,
+        confirmPassword: e.target.confirmPassword.value,
+      });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/user/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -37,12 +43,17 @@ export function SignupForm({ ...props }) {
           confirmPassword: e.target.confirmPassword.value,
         }),
       });
+      const data = await res.json();
       if (!res.ok) {
-        alert(data.errors ? data.errors.join("\n") : "Signup failed");
+        alert(
+          data.errors
+            ? data.errors.map((error) => error.msg).join("\n")
+            : "Signup failed"
+        );
         setLoading(false);
         return;
       }
-      const data = await res.json();
+
       setToken(data.token);
       setUser(data.user);
       setLoading(false);

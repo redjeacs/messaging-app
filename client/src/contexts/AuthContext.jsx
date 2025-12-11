@@ -1,38 +1,22 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-const AuthContext = createContext(undefined);
+const AuthContext = createContext();
 
-const useAuth = () => {
-  const authContext = useContext(AuthContext);
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
 
-  if (!authContext)
-    throw new Error("useAuth must be used within a AuthProvider");
-
-  return authContext;
-};
-
-const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   useEffect(() => {
-    const fetchUser = async () => {
-      if (token) {
-        async () => {
-          try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
-              headers: { Authorizatoin: `Bearer ${token}` },
-            });
-            if (!res.ok) throw new Error("Sessuib fetcg failed");
-            const data = await res.json();
-            setUser(data.user);
-          } catch {
-            setUser(null);
-          }
-        };
-        api;
-      }
-    };
-    fetchUser();
+    if (user) localStorage.setItem("user", JSON.stringify(user));
+    else localStorage.removeItem("user");
+  }, [user]);
+
+  useEffect(() => {
+    if (token) localStorage.setItem("token", token);
+    else localStorage.removeItem("token");
   }, [token]);
 
   return (
@@ -40,6 +24,8 @@ const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export { AuthContext, AuthProvider, useAuth };
+export function useAuth() {
+  return useContext(AuthContext);
+}

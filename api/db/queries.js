@@ -3,7 +3,7 @@ const { PrismaPg } = require("@prisma/adapter-pg");
 const { PrismaClient } = require("@prisma/client");
 
 const adapter = new PrismaPg({
-  connectionString: process.env.LOCAL_DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
 });
 const prisma = new PrismaClient({ adapter });
 

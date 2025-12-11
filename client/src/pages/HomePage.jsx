@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 function HomePage() {
   const { user, token } = useAuth();
+  console.log(user, token);
   return (
     <div>
       HomePage
