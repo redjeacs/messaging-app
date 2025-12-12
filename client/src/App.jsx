@@ -1,14 +1,13 @@
 import { Outlet } from "react-router-dom";
-import Footer from "./components/Footer";
+import Sidebar from "./components/Sidebar";
 
 function App() {
   return (
-    <div className="flex flex-col h-screen">
-      {/* Header/Navbar */}
-      <main className="flex p-4 justify-center items-center grow">
+    <div className="">
+      <Sidebar />
+      <main className="flex h-[calc(100vh-4rem)] md:ml-22">
         <Outlet />
       </main>
-      <Footer />
     </div>
   );
 }

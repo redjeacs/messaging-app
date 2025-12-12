@@ -7,12 +7,10 @@ const routes = [
   {
     path: "/",
     element: <App />,
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: "/signup", element: <SignupPage /> },
-      { path: "/signin", element: <SigninPage /> },
-    ],
+    children: [{ index: true, element: <HomePage /> }],
   },
+  { path: "/signup", element: <SignupPage /> },
+  { path: "/signin", element: <SigninPage /> },
 ];
 
 export default routes;
