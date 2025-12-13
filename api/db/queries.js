@@ -24,3 +24,39 @@ exports.getUser = async (colName, query) => {
   });
   return user;
 };
+
+exports.getChatById = async (chatId) => {
+  const chat = await prisma.chat.findUnique({
+    where: { id: chatId },
+    include: {
+      messages: true,
+      users: true,
+    },
+  });
+  return chat;
+};
+
+exports.createMessage = async (chatId, senderId, content) => {
+  const newMessage = await prisma.message.create({
+    data: {
+      chatId: chatId,
+      senderId: senderId,
+      content: content,
+    },
+  });
+  return newMessage;
+};
+
+exports.editMessage = async (messageId, content) => {
+  const updatedMessage = await prisma.message.update({
+    where: { id: messageId },
+    data: { content: content },
+  });
+  return updatedMessage;
+};
+
+exports.deleteMessage = async (messageId) => {
+  await prisma.message.delete({
+    where: { id: messageId },
+  });
+};

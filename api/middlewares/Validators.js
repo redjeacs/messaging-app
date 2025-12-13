@@ -59,3 +59,30 @@ exports.signinValidator = [
     .isLength({ min: 1, max: 50 })
     .withMessage("username " + length),
 ];
+
+exports.messageValidator = [
+  body("chatId")
+    .trim()
+    .notEmpty()
+    .withMessage("chatId " + emptyMsg)
+    .custom(async (value) => {
+      const chat = await db.getChatById(value);
+      if (!chat) throw new Error("Chat does not exist");
+      else return true;
+    }),
+  body("senderId")
+    .trim()
+    .notEmpty()
+    .withMessage("senderId " + emptyMsg)
+    .custom(async (value) => {
+      const user = await db.getUser("id", value);
+      if (!user) throw new Error("Sender does not exist");
+      else return true;
+    }),
+  body("content")
+    .trim()
+    .notEmpty()
+    .withMessage("content " + emptyMsg)
+    .isLength({ min: 1, max: 500 })
+    .withMessage("content should be between 1 and 500 characters"),
+];

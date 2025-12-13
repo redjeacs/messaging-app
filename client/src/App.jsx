@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="">
       <Sidebar />
-      <main className="flex h-[calc(100vh-4rem)] md:ml-22">
+      <main className="flex h-[calc(100vh-4rem)] md:h-screen md:ml-22">
         <Outlet />
       </main>
     </div>
