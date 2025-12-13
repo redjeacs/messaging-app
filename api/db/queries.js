@@ -25,6 +25,17 @@ exports.getUser = async (colName, query) => {
   return user;
 };
 
+exports.createChat = async (userIds) => {
+  const newChat = await prisma.chat.create({
+    data: {
+      users: {
+        connect: userIds.map((id) => ({ id: id })),
+      },
+    },
+  });
+  return newChat;
+};
+
 exports.getChatById = async (chatId) => {
   const chat = await prisma.chat.findUnique({
     where: { id: chatId },

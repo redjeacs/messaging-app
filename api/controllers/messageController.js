@@ -3,6 +3,25 @@ const { validationResult, matchedData } = require("express-validator");
 const CustomNotFoundError = require("../middlewares/CustomNotFoundError");
 const validators = require("../middlewares/Validators");
 
+exports.createChat = [
+  validators.chatValidator,
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      const data = matchedData(req);
+      if (!data)
+        throw new CustomNotFoundError("provided chat information is invalid");
+      await db.createChat(data.userIds);
+      res.status(201).json({ message: "Chat created" });
+    } catch (err) {
+      return next(err);
+    }
+  },
+];
+
 exports.getChat = async (req, res, next) => {
   try {
     const chatId = req.params.id;

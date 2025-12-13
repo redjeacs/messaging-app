@@ -60,6 +60,24 @@ exports.signinValidator = [
     .withMessage("username " + length),
 ];
 
+exports.chatValidator = [
+  body("name")
+    .trim()
+    .optional()
+    .isLength({ min: 1, max: 50 })
+    .withMessage("name " + length),
+  body("userIds")
+    .isArray({ min: 2 })
+    .withMessage("userIds must be an array with at least two user IDs")
+    .custom(async (value) => {
+      for (const id of value) {
+        const user = await db.getUser("id", id);
+        if (!user) throw new Error(`User with ID ${id} does not exist`);
+      }
+      return true;
+    }),
+];
+
 exports.messageValidator = [
   body("chatId")
     .trim()
