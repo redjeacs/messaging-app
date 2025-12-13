@@ -3,11 +3,9 @@ import messagesIcon from "../assets/messages.webp";
 import userIcon from "../assets/user.svg";
 import devProfileIcon from "../assets/devprofiles.jpg";
 import signoutIcon from "../assets/signout.webp";
-import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 function Sidebar() {
-  const { user, token } = useAuth();
-
   const handleSignout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -22,12 +20,14 @@ function Sidebar() {
       <nav className="flex-1 p-2 md:p-4 text-center px-4">
         <ul className="flex md:flex-col gap-4 items-center h-full md:h-auto justify-start">
           <li className="md:p-4 cursor-pointer hover:bg-gray-800 rounded w-6 h-6 md:w-full md:h-full">
-            <img src={messagesIcon} alt="" className="w-full h-full" />{" "}
-            {/* convert to Links */}
+            <Link to="/">
+              <img src={messagesIcon} alt="" className="w-full h-full" />{" "}
+            </Link>
           </li>
           <li className="md:p-4 cursor-pointer hover:bg-gray-800 rounded w-6 h-6 md:w-full md:h-full">
-            <img src={userIcon} alt="" className="w-full h-full" />{" "}
-            {/* convert to Links */}
+            <Link to="/profile">
+              <img src={userIcon} alt="" className="w-full h-full" />{" "}
+            </Link>
           </li>
         </ul>
       </nav>
