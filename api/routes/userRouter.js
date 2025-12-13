@@ -4,8 +4,14 @@ const verifyToken = require("../middlewares/Verifytoken");
 
 const userRouter = Router();
 
-userRouter.get("/", verifyToken, userController.checkSignin);
-userRouter.post("/signup", userController.createUser);
-userRouter.post("/signin", userController.signin);
+userRouter.get("/", verifyToken, userController.getUserProfile);
+userRouter.get("/chats", verifyToken, userController.getUserChats);
+userRouter.post("/friends/:friendName", verifyToken, userController.addFriend);
+userRouter.delete(
+  "/friends/:friendName",
+  verifyToken,
+  userController.removeFriend
+);
+userRouter.get("/friends", verifyToken, userController.listFriends);
 
 module.exports = userRouter;

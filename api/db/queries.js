@@ -25,6 +25,72 @@ exports.getUser = async (colName, query) => {
   return user;
 };
 
+exports.getUserById = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+  return user;
+};
+
+exports.getChatsByUserId = async (userId) => {
+  const chats = await prisma.chat.findMany({
+    where: {
+      users: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+    include: {
+      messages: true,
+      users: true,
+    },
+  });
+  return chats;
+};
+
+exports.addFriend = async (userId, friendName) => {
+  const friend = await prisma.user.findUnique({
+    where: { name: friendName },
+  });
+  if (!friend) {
+    throw new Error("Friend not found");
+  }
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      friends: {
+        connect: { id: friend.id },
+      },
+    },
+  });
+};
+
+exports.removeFriend = async (userId, friendName) => {
+  const friend = await prisma.user.findUnique({
+    where: { name: friendName },
+  });
+  if (!friend) {
+    throw new Error("Friend not found");
+  }
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      friends: {
+        disconnect: { id: friend.id },
+      },
+    },
+  });
+};
+
+exports.listFriends = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { friends: true },
+  });
+  return user.friends;
+};
+
 exports.createChat = async (userIds) => {
   const newChat = await prisma.chat.create({
     data: {

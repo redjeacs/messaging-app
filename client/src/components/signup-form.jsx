@@ -33,7 +33,7 @@ export function SignupForm({ ...props }) {
         password: e.target.password.value,
         confirmPassword: e.target.confirmPassword.value,
       });
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/user/signup`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
