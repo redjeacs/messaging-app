@@ -15,7 +15,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Spinner } from "./ui/spinner";
 
@@ -38,7 +38,7 @@ export function LoginForm({ className, ...props }) {
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.errors ? data.errors.join("\n") : "Signin failed");
+        alert(data.message ? data.message : "Signin failed");
         setLoading(false);
         return;
       }
@@ -49,7 +49,7 @@ export function LoginForm({ className, ...props }) {
       navigate("/");
     } catch (err) {
       console.error("Signin error:", err);
-      alert("An error occurred during signin. Please try again.");
+      alert("An error occurred during signin.");
       setLoading(false);
     }
   };

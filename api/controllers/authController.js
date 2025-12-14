@@ -47,12 +47,10 @@ exports.signin = [
 
       const user = await db.getUser("email", req.body.email);
       if (!user)
-        return res.status(401).json({ message: "Invalid credentials" });
-
+        return res.status(401).json({ message: "Your email is invalid" });
       const valid = await bcrypt.compare(req.body.password, user.password);
       if (!valid)
-        return res.status(401).json({ message: "Invalid credentials" });
-
+        return res.status(401).json({ message: "Your password is invalid" });
       const payload = {
         id: user.id,
         email: user.email,
