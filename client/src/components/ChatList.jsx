@@ -148,7 +148,7 @@ function ChatList() {
           </div>
         </div>
         <div className=" md:w-2/3 bg-white rounded-lg">
-          <Chat key={chatId} chatId={chatId} />
+          {chatId && <Chat key={chatId} chatId={chatId} />}
         </div>
       </>
     </div>

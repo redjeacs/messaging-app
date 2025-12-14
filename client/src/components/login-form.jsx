@@ -36,12 +36,13 @@ export function LoginForm({ className, ...props }) {
           password: e.target.password.value,
         }),
       });
+      const data = await res.json();
       if (!res.ok) {
         alert(data.errors ? data.errors.join("\n") : "Signin failed");
         setLoading(false);
         return;
       }
-      const data = await res.json();
+
       setToken(data.token);
       setUser(data.user);
       setLoading(false);

@@ -131,7 +131,7 @@ exports.getChatById = async (chatId) => {
   const chat = await prisma.chat.findUnique({
     where: { id: chatId },
     include: {
-      messages: true,
+      messages: { include: { sender: true } },
       users: true,
     },
   });

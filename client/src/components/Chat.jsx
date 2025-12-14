@@ -1,47 +1,71 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import devProfileIcon from "../assets/devprofiles.jpg";
 import userProfileIcon from "../assets/user.svg";
 import sendIcon from "../assets/send.webp";
+import Message from "./Message";
 
 function Chat({ chatId }) {
   const { user, token } = useAuth();
   const [chat, setChat] = useState({});
   const [friends, setFriends] = useState([]);
 
-  useEffect(() => {
-    const fetchChat = async () => {
-      if (chatId && token) {
-        try {
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/messages/${chatId}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setChat(data);
-            const friendUsers = data.users.find(
-              (chatUser) => chatUser.id !== user.id
-            );
-            setFriends(friendUsers);
-          } else {
-            console.error("Failed to fetch chat messages");
+  const fetchChat = useCallback(async () => {
+    if (chatId && token) {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/messages/${chatId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
           }
-        } catch (error) {
-          console.error("Error fetching chat messages:", error);
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setChat(data);
+          const friendUsers = data.users.find(
+            (chatUser) => chatUser.id !== user.id
+          );
+          setFriends(friendUsers);
+        } else {
+          console.error("Failed to fetch chat messages");
         }
+      } catch (error) {
+        console.error("Error fetching chat messages:", error);
       }
-    };
-    fetchChat();
-  }, [chatId]);
+    }
+  }, [chatId, token, user.id]);
 
-  const handleSubmitMessage = (e) => {
+  useEffect(() => {
+    fetchChat();
+  }, [fetchChat]);
+
+  const handleSubmitMessage = async (e) => {
     e.preventDefault();
     const message = e.target.message.value;
-    console.log("Submit message:", message);
-    // submit post implementation goes here
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/messages/${chatId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            chatId: chatId,
+            senderId: user.id,
+            message: message,
+          }),
+        }
+      );
+
+      if (!res.ok) return console.error("Failed to send message");
+
+      fetchChat();
+      e.target.message.value = "";
+    } catch (err) {
+      console.error("Error sending message:", err);
+    }
   };
 
   return (
@@ -70,7 +94,12 @@ function Chat({ chatId }) {
         </div>
       </header>
       <div className="w-full h-full flex flex-col p-4">
-        <div className="w-full flex-1 overflow-y-auto">messages</div>
+        <div className="flex flex-col gap-4 w-full flex-1 overflow-y-auto">
+          {chat.messages &&
+            chat.messages.map((message) => (
+              <Message key={message.id} userId={user.id} message={message} />
+            ))}
+        </div>
         <form
           onSubmit={handleSubmitMessage}
           className="flex self-end bottom-0 items-center w-full p-4 bg-gray-100 rounded-lg"
