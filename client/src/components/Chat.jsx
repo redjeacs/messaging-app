@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import devProfileIcon from "../assets/devprofiles.jpg";
 import userProfileIcon from "../assets/user.svg";
+import sendIcon from "../assets/send.webp";
 
 function Chat({ chatId }) {
   const { user, token } = useAuth();
@@ -36,10 +37,15 @@ function Chat({ chatId }) {
     fetchChat();
   }, [chatId]);
 
-  console.log(friends);
+  const handleSubmitMessage = (e) => {
+    e.preventDefault();
+    const message = e.target.message.value;
+    console.log("Submit message:", message);
+    // submit post implementation goes here
+  };
 
   return (
-    <div>
+    <div className="h-full w-full flex flex-col">
       <header className="flex p-4 gap-2 items-end border-b">
         <img
           src={
@@ -63,6 +69,28 @@ function Chat({ chatId }) {
           )}
         </div>
       </header>
+      <div className="w-full h-full flex flex-col p-4">
+        <div className="w-full flex-1 overflow-y-auto">messages</div>
+        <form
+          onSubmit={handleSubmitMessage}
+          className="flex self-end bottom-0 items-center w-full p-4 bg-gray-100 rounded-lg"
+        >
+          <input
+            type="text"
+            id="message"
+            name="message"
+            placeholder="Message"
+            className="flex-1 border-none outline-none bg-transparent"
+          />
+          <button className="self-end">
+            <img
+              src={sendIcon}
+              alt="Send"
+              className="w-6 h-6 cursor-pointer hover:transform hover:scale-110"
+            />
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
