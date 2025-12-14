@@ -138,21 +138,21 @@ exports.getChatById = async (chatId) => {
   return chat;
 };
 
-exports.createMessage = async (chatId, senderId, content) => {
+exports.createMessage = async (chatId, senderId, message) => {
   const newMessage = await prisma.message.create({
     data: {
       chatId: chatId,
       senderId: senderId,
-      content: content,
+      message: message,
     },
   });
   return newMessage;
 };
 
-exports.editMessage = async (messageId, content) => {
+exports.editMessage = async (messageId, message) => {
   const updatedMessage = await prisma.message.update({
     where: { id: messageId },
-    data: { content: content },
+    data: { message: message },
   });
   return updatedMessage;
 };

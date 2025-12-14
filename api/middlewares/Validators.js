@@ -97,10 +97,10 @@ exports.messageValidator = [
       if (!user) throw new Error("Sender does not exist");
       else return true;
     }),
-  body("content")
+  body("message")
     .trim()
     .notEmpty()
-    .withMessage("content " + emptyMsg)
+    .withMessage("Message " + emptyMsg)
     .isLength({ min: 1, max: 500 })
-    .withMessage("content should be between 1 and 500 characters"),
+    .withMessage("Message should be between 1 and 500 characters"),
 ];

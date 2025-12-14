@@ -51,7 +51,7 @@ exports.createMessage = [
       const newMessage = await db.createMessage(
         req.body.chatId,
         req.body.senderId,
-        req.body.content
+        req.body.message
       );
       res.status(201).json({ message: "Message created", newMessage });
     } catch (err) {
