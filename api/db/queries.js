@@ -49,12 +49,12 @@ exports.getChatsByUserId = async (userId) => {
   return chats;
 };
 
-exports.addFriend = async (userId, friendName) => {
+exports.addFriend = async (userId, friendEmail) => {
   const friend = await prisma.user.findUnique({
-    where: { name: friendName },
+    where: { email: friendEmail },
   });
   if (!friend) {
-    throw new Error("Friend not found");
+    throw new Error("Email not found");
   }
   await prisma.user.update({
     where: { id: userId },
@@ -64,11 +64,36 @@ exports.addFriend = async (userId, friendName) => {
       },
     },
   });
+  const possibleChats = await prisma.chat.findMany({
+    where: {
+      users: {
+        every: {
+          id: { in: [userId, friend.id] },
+        },
+      },
+    },
+  });
+
+  const existingChat = possibleChats.find((chat) => {
+    chat.users.length === 2 &&
+      chat.users.some((u) => u.id === userId) &&
+      chat.users.some((u) => u.id === friend.id);
+  });
+
+  if (!existingChat) {
+    await prisma.chat.create({
+      data: {
+        users: {
+          connect: [{ id: userId }, { id: friend.id }],
+        },
+      },
+    });
+  }
 };
 
-exports.removeFriend = async (userId, friendName) => {
+exports.removeFriend = async (userId, friendEmail) => {
   const friend = await prisma.user.findUnique({
-    where: { name: friendName },
+    where: { email: friendEmail },
   });
   if (!friend) {
     throw new Error("Friend not found");

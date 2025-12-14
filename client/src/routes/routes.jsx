@@ -3,6 +3,7 @@ import HomePage from "../pages/HomePage";
 import ProfilePage from "../pages/ProfilePage";
 import SignupPage from "../pages/SignupPage";
 import SigninPage from "../pages/SigninPage";
+import FriendsPage from "../pages/FriendsPage";
 
 const routes = [
   {
@@ -11,6 +12,7 @@ const routes = [
     children: [
       { index: true, element: <HomePage /> },
       { path: "/profile", element: <ProfilePage /> },
+      { path: "/friends", element: <FriendsPage /> },
     ],
   },
   { path: "/signup", element: <SignupPage /> },

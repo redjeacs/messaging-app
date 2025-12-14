@@ -6,7 +6,7 @@ const userRouter = Router();
 
 userRouter.get("/", verifyToken, userController.getUserProfile);
 userRouter.get("/chats", verifyToken, userController.getUserChats);
-userRouter.post("/friends/:friendName", verifyToken, userController.addFriend);
+userRouter.post("/friends/:friendEmail", verifyToken, userController.addFriend);
 userRouter.delete(
   "/friends/:friendName",
   verifyToken,

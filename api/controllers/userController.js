@@ -26,8 +26,8 @@ exports.getUserChats = async (req, res, next) => {
 exports.addFriend = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const friendName = req.params.friendName;
-    await db.addFriend(userId, friendName);
+    const friendEmail = req.params.friendEmail;
+    await db.addFriend(userId, friendEmail);
     res.status(200).json({ message: "Friend added" });
   } catch (err) {
     return next(err);

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import devProfile from "../assets/devprofiles.jpg";
+import addUserIcon from "../assets/add-user.webp";
 import { Spinner } from "./ui/spinner";
+import { Link } from "react-router-dom";
 
 function ChatList() {
   const { token } = useAuth();
@@ -23,17 +25,8 @@ function ChatList() {
           if (response.ok) {
             const data = await response.json();
             setIsChatListLoading(false);
-            setChatList([
-              { id: 1, users: [], messages: [] },
-              { id: 2, users: [], messages: [] },
-              { id: 3, users: [], messages: [] },
-              { id: 4, users: [], messages: [] },
-              { id: 5, users: [], messages: [] },
-              { id: 6, users: [], messages: [] },
-              { id: 7, users: [], messages: [] },
-              { id: 8, users: [], messages: [] },
-            ]);
-            // setChatId(data[0].id);
+            setChatList(data);
+            setChatId(data[0]?.id || null);
             console.log("Fetched user chats:", data);
           } else {
             setIsChatListLoading(false);
@@ -73,6 +66,32 @@ function ChatList() {
     fetchChat();
   }, [chatId]);
 
+  const addFriend = async (friendName) => {
+    if (token) {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/user/friends/${friendName}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ friendName }),
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Friend added successfully:", data);
+        } else {
+          console.error("Failed to add friend");
+        }
+      } catch (error) {
+        console.error("Error adding friend:", error);
+      }
+    }
+  };
+
   const handleChatSelect = (chatId) => {
     setChatId(chatId);
   };
@@ -81,7 +100,16 @@ function ChatList() {
     <div className="flex w-full h-full gap-2">
       <>
         <div className="flex flex-col md:w-1/3 bg-white rounded-lg gap-2 p-4">
-          <h1 className="text-2xl font-bold">Chats</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Chats</h1>
+            <Link onClick={() => addFriend("user2@gmail.com")}>
+              <img
+                src={addUserIcon}
+                alt="Add User"
+                className="w-8 h-8 cursor-pointer hover:transform hover:scale-110 hover:bg-gray-200 rounded-lg p-1"
+              />
+            </Link>
+          </div>
           <div className="w-full bg-gray-200 p-2 rounded-full text-md">
             search
           </div>
