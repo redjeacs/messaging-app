@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import devProfile from "../assets/devprofiles.jpg";
 import addUserIcon from "../assets/add-user.webp";
+import devProfileIcon from "../assets/devprofiles.jpg";
+import userProfileIcon from "../assets/user.svg";
 import { Spinner } from "./ui/spinner";
 import { Link } from "react-router-dom";
+import Chat from "./Chat";
 
 function ChatList() {
-  const { token } = useAuth();
+  const { user, token } = useAuth();
   const [ChatList, setChatList] = useState([]);
   const [chatId, setChatId] = useState(null);
   const [isChatListLoading, setIsChatListLoading] = useState(false);
@@ -27,7 +29,6 @@ function ChatList() {
             setIsChatListLoading(false);
             setChatList(data);
             setChatId(data[0]?.id || null);
-            console.log("Fetched user chats:", data);
           } else {
             setIsChatListLoading(false);
             console.error("Failed to fetch user chats");
@@ -42,29 +43,13 @@ function ChatList() {
     fetchUserChats();
   }, [token]);
 
-  useEffect(() => {
-    const fetchChat = async () => {
-      if (chatId && token) {
-        try {
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/messages/${chatId}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          if (response.ok) {
-            const data = await response.json();
-            console.log("Fetched chat messages:", data);
-          } else {
-            console.error("Failed to fetch chat messages");
-          }
-        } catch (error) {
-          console.error("Error fetching chat messages:", error);
-        }
-      }
-    };
-    fetchChat();
-  }, [chatId]);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   const addFriend = async (friendName) => {
     if (token) {
@@ -124,20 +109,35 @@ function ChatList() {
                   <div
                     key={chat.id}
                     className="flex gap-2 p-2 items-center hover:bg-gray-100 rounded-lg cursor-pointer"
+                    onClick={() => handleChatSelect(chat.id)}
                   >
                     <img
-                      src={chat.users[0]?.profilePic || devProfile}
+                      src={
+                        chat.name !== "One on One Chat"
+                          ? devProfileIcon
+                          : chat.users.find(
+                              (chatUser) => chatUser.id !== user.id
+                            ).profile || userProfileIcon
+                      }
                       alt="profile"
-                      className="w-12 h-12 rounded-full"
+                      className="w-12 h-12 rounded-full bg-black object-cover"
                     />
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-1/2">
                       <p className="font-bold">
-                        {chat.users[0]?.name || "Name"}
+                        {chat.name !== "One on One Chat"
+                          ? chat.name
+                          : chat.users.find(
+                              (chatUser) => chatUser.id !== user.id
+                            )?.name || "Name"}
                       </p>
-                      <p className="text-xs">
-                        {chat.messages[chat.messages.length - 1]?.text ||
-                          "No messages yet"}
-                      </p>
+                      <div className="flex w-full items-center">
+                        <p className="text-xs">
+                          {chat.messages[chat.messages.length - 1]?.text ||
+                            "No messages yet"}
+                        </p>
+                        <span className="mx-1">·</span>
+                        <p className="text-xs">{formatDate(chat.updatedAt)}</p>
+                      </div>
                     </div>
                   </div>
                 );
@@ -147,7 +147,9 @@ function ChatList() {
             )}
           </div>
         </div>
-        <div className=" md:w-2/3 bg-white rounded-lg p-4">test</div>
+        <div className=" md:w-2/3 bg-white rounded-lg">
+          <Chat key={chatId} chatId={chatId} />
+        </div>
       </>
     </div>
   );

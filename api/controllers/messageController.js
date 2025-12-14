@@ -24,7 +24,7 @@ exports.createChat = [
 
 exports.getChat = async (req, res, next) => {
   try {
-    const chatId = req.params.id;
+    const chatId = req.params.chatId;
     const chat = await db.getChatById(chatId);
     if (!chat) {
       return res.status(404).json({ message: "Chat not found" });
