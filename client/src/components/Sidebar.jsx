@@ -19,16 +19,22 @@ function Sidebar() {
       </div>
       <nav className="flex-1 p-2 md:p-4 text-center px-4">
         <ul className="flex md:flex-col gap-4 items-center h-full md:h-auto justify-start">
-          <li className="md:p-4 cursor-pointer hover:bg-gray-800 rounded w-6 h-6 md:w-full md:h-full">
-            <Link to="/">
+          <Link
+            to="/"
+            className="md:p-4 cursor-pointer hover:bg-gray-800 rounded w-6 h-6 md:w-full md:h-full"
+          >
+            <li>
               <img src={messagesIcon} alt="" className="w-full h-full" />{" "}
-            </Link>
-          </li>
-          <li className="md:p-4 cursor-pointer hover:bg-gray-800 rounded w-6 h-6 md:w-full md:h-full">
-            <Link to="/profile">
+            </li>
+          </Link>
+          <Link
+            to="/profile"
+            className="md:p-4 cursor-pointer hover:bg-gray-800 rounded w-6 h-6 md:w-full md:h-full"
+          >
+            <li>
               <img src={userIcon} alt="" className="w-full h-full" />{" "}
-            </Link>
-          </li>
+            </li>
+          </Link>
         </ul>
       </nav>
       <div

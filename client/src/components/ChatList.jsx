@@ -117,7 +117,7 @@ function ChatList() {
                           ? devProfileIcon
                           : chat.users.find(
                               (chatUser) => chatUser.id !== user.id
-                            ).profile || userProfileIcon
+                            )?.profile || userProfileIcon
                       }
                       alt="profile"
                       className="w-12 h-12 rounded-full bg-black object-cover"
