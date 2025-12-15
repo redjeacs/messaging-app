@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { PrismaPg } = require("@prisma/adapter-pg");
 const { PrismaClient } = require("@prisma/client");
+const { query } = require("express-validator");
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -138,6 +139,14 @@ exports.getChatById = async (chatId) => {
   return chat;
 };
 
+exports.getMessage = async (query, value) => {
+  const key = { [query]: value };
+  const message = await prisma.message.findUnique({
+    where: key,
+  });
+  return message;
+};
+
 exports.createMessage = async (chatId, senderId, message) => {
   const newMessage = await prisma.message.create({
     data: {
@@ -157,8 +166,8 @@ exports.editMessage = async (messageId, message) => {
   return updatedMessage;
 };
 
-exports.deleteMessage = async (messageId) => {
+exports.deleteMessage = async (userId, messageId) => {
   await prisma.message.delete({
-    where: { id: messageId },
+    where: { id: messageId, senderId: userId },
   });
 };

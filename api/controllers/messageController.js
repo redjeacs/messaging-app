@@ -84,8 +84,19 @@ exports.editMessage = [
 
 exports.deleteMessage = async (req, res, next) => {
   try {
-    const messageId = req.params.id;
-    await db.deleteMessage(messageId);
+    const userId = req.user.id;
+    const messageId = req.params.messageId;
+
+    const message = await db.getMessage("id", messageId);
+    if (!message) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+    if (message.senderId !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this message" });
+    }
+    await db.deleteMessage(userId, messageId);
     res.status(200).json({ message: "Message deleted" });
   } catch (err) {
     return next(err);

@@ -93,11 +93,16 @@ function Chat({ chatId }) {
           )}
         </div>
       </header>
-      <div className="w-full h-full flex flex-col p-4">
+      <div className="relative w-full h-full flex flex-col p-4">
         <div className="flex flex-col gap-4 w-full flex-1 overflow-y-auto">
           {chat.messages &&
             chat.messages.map((message) => (
-              <Message key={message.id} userId={user.id} message={message} />
+              <Message
+                key={message.id}
+                userId={user.id}
+                message={message}
+                fetchChat={fetchChat}
+              />
             ))}
         </div>
         <form
