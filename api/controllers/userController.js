@@ -13,6 +13,25 @@ exports.getUserProfile = async (req, res, next) => {
   }
 };
 
+exports.updateUserProfile = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const data = {};
+    const { name, email, profile } = req.body;
+
+    if (name !== undefined) data.name = name;
+    if (email !== undefined) data.email = email;
+    if (profile !== undefined) data.profile = profile;
+
+    const updatedUser = await db.updateUserProfile(userId, data);
+    if (!updatedUser)
+      return res.status(404).json({ message: "User update failed" });
+    res.status(200).json({ user: updatedUser, message: "Profile updated" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 exports.getUserChats = async (req, res, next) => {
   try {
     const userId = req.user.id;

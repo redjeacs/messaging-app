@@ -33,6 +33,15 @@ exports.getUserById = async (userId) => {
   return user;
 };
 
+exports.updateUserProfile = async (userId, data) => {
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: data,
+  });
+
+  return updatedUser;
+};
+
 exports.getChatsByUserId = async (userId) => {
   const chats = await prisma.chat.findMany({
     where: {

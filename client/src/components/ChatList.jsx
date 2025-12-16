@@ -132,7 +132,7 @@ function ChatList() {
                       </p>
                       <div className="flex w-full items-center">
                         <p className="text-xs">
-                          {chat.messages[chat.messages.length - 1]?.text ||
+                          {chat.messages[chat.messages.length - 1]?.message ||
                             "No messages yet"}
                         </p>
                         <span className="mx-1">·</span>

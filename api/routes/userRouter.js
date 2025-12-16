@@ -5,6 +5,7 @@ const verifyToken = require("../middlewares/Verifytoken");
 const userRouter = Router();
 
 userRouter.get("/", verifyToken, userController.getUserProfile);
+userRouter.put("/", verifyToken, userController.updateUserProfile);
 userRouter.get("/chats", verifyToken, userController.getUserChats);
 userRouter.post("/friends/:friendEmail", verifyToken, userController.addFriend);
 userRouter.delete(
