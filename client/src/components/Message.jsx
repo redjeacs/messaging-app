@@ -80,12 +80,14 @@ function Message({ userId, message, fetchChat }) {
             }`}
           >
             <p>{message.message}</p>
-            <button
-              onClick={handleDelete}
-              className="cursor-pointer text-sm hover:transform hover:scale-110"
-            >
-              X
-            </button>
+            {message.senderId === userId && (
+              <button
+                onClick={handleDelete}
+                className="cursor-pointer text-sm hover:transform hover:scale-110"
+              >
+                X
+              </button>
+            )}
           </div>
         </div>
       </div>
