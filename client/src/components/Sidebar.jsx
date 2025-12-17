@@ -4,8 +4,10 @@ import userIcon from "../assets/user.svg";
 import devProfileIcon from "../assets/devprofiles.jpg";
 import signoutIcon from "../assets/signout.webp";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function Sidebar() {
+  const { user } = useAuth();
   const handleSignout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -45,7 +47,7 @@ function Sidebar() {
       </div>
       <div className="p-2 md:p-5 md:border-t md:border-l-0 border-l border-gray-800 h-16 w-16 md:w-22 md:h-22">
         <img
-          src={devProfileIcon}
+          src={user.profile || devProfileIcon}
           alt=""
           className="w-full h-full rounded-full object-cover cursor-pointer"
         />
