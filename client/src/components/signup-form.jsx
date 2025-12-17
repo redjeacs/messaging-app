@@ -27,12 +27,6 @@ export function SignupForm({ ...props }) {
     e.preventDefault();
     setLoading(true);
     try {
-      console.log("Signup data:", {
-        name: e.target.name.value,
-        email: e.target.email.value,
-        password: e.target.password.value,
-        confirmPassword: e.target.confirmPassword.value,
-      });
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

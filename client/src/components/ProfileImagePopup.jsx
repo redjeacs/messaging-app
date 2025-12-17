@@ -5,7 +5,7 @@ import { Spinner } from "../components/ui/spinner";
 
 function ProfileImagePopup({ setImageFormOpen }) {
   const { user, setUser, token } = useAuth();
-  const [preview, setPreview] = useState(user.profile || userProfileIcon);
+  const [preview, setPreview] = useState(user?.profile || userProfileIcon);
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = (e) => {

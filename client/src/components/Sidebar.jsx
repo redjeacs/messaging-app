@@ -47,7 +47,7 @@ function Sidebar() {
       </div>
       <div className="p-2 md:p-5 md:border-t md:border-l-0 border-l border-gray-800 h-16 w-16 md:w-22 md:h-22">
         <img
-          src={user.profile || devProfileIcon}
+          src={user?.profile || devProfileIcon}
           alt=""
           className="w-full h-full rounded-full object-cover cursor-pointer"
         />

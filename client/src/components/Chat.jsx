@@ -78,7 +78,7 @@ function Chat({ chatId }) {
               : friends?.profile || userProfileIcon
           }
           alt="profile"
-          className="w-10 h-10 bg-gray-500 rounded-full object-cover p-1"
+          className="w-10 h-10 bg-gray-500 rounded-full object-cover"
         />
         <div className="flex flex-col">
           <p className="font-bold text-lg">
