@@ -82,6 +82,7 @@ exports.addFriend = async (userId, friendEmail) => {
         },
       },
     },
+    include: { users: true },
   });
 
   const existingChat = possibleChats.find((chat) => {
