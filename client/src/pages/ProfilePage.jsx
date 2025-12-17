@@ -4,6 +4,7 @@ import editIcon from "../assets/edit.webp";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ProfileImagePopup from "@/components/ProfileImagePopup";
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ function ProfilePage() {
   const [email, setEmail] = useState(user.email);
   const [nameEdit, setNameEdit] = useState(false);
   const [emailEdit, setEmailEdit] = useState(false);
+  const [imageFormOpen, setImageFormOpen] = useState(false);
 
   const handleNameChange = async () => {
     if (user.name === name) return setNameEdit(false);
@@ -84,6 +86,10 @@ function ProfilePage() {
     }
   };
 
+  const openImageUpdateForm = () => {
+    setImageFormOpen(true);
+  };
+
   return (
     <div className="flex w-full p-4 justify-center items-center h-full">
       <div className="flex flex-col items-center bg-white min-w-[300px] w-1/2 h-full rounded-lg gap-8">
@@ -100,8 +106,12 @@ function ProfilePage() {
             <img
               src={cameraIcon}
               alt="camera"
+              onClick={openImageUpdateForm}
               className="bg-gray-800 w-8 h-8 absolute bottom-0 right-0 rounded-full p-1 cursor-pointer hover:transform hover:scale-110"
             />
+            {imageFormOpen && (
+              <ProfileImagePopup setImageFormOpen={setImageFormOpen} />
+            )}
           </div>
         </div>
         <div className="min-w-[280px] w-1/2 h-full">

@@ -1,4 +1,5 @@
 const db = require("../db/queries");
+const cloudinary = require("../utils/cloudinary");
 
 exports.getUserProfile = async (req, res, next) => {
   try {
@@ -21,12 +22,36 @@ exports.updateUserProfile = async (req, res, next) => {
 
     if (name !== undefined) data.name = name;
     if (email !== undefined) data.email = email;
-    if (profile !== undefined) data.profile = profile;
 
     const updatedUser = await db.updateUserProfile(userId, data);
     if (!updatedUser)
       return res.status(404).json({ message: "User update failed" });
     res.status(200).json({ user: updatedUser, message: "Profile updated" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.updateProfileImage = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "profile_images",
+      width: 500,
+      height: 500,
+      crop: "fill",
+    });
+    const updatedUser = await db.updateUserProfile(userId, {
+      profile: result.secure_url,
+    });
+    if (!updatedUser)
+      return res.status(404).json({ message: "Profile image update failed" });
+    res
+      .status(200)
+      .json({ user: updatedUser, message: "Profile image updated" });
   } catch (err) {
     return next(err);
   }
