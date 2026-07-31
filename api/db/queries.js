@@ -60,36 +60,53 @@ exports.getChatsByUserId = async (userId) => {
 };
 
 exports.addFriend = async (userId, friendEmail) => {
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { friends: true, friendsOf: true },
+  });
+
+  if (currentUser.email === friendEmail) {
+    throw new Error("You cannot add yourself as a friend");
+  }
+
   const friend = await prisma.user.findUnique({
     where: { email: friendEmail },
   });
+
   if (!friend) {
     throw new Error("Email not found");
   }
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      friends: {
-        connect: { id: friend.id },
+
+  const isAlreadyFriend = currentUser.friends.some((f) => f.id === friend.id);
+
+  if (!isAlreadyFriend) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        friends: { connect: { id: friend.id } },
+        friendsOf: { connect: { id: friend.id } },
       },
-    },
-  });
-  const possibleChats = await prisma.chat.findMany({
-    where: {
-      users: {
-        every: {
-          id: { in: [userId, friend.id] },
+    });
+  }
+
+  const chats =
+    (await prisma.chat.findFirst({
+      where: {
+        AND: [
+          { users: { some: { id: userId } } },
+          { users: { some: { id: friend.id } } },
+        ],
+      },
+      include: {
+        users: {
+          select: { id: true },
         },
       },
-    },
-    include: { users: true },
-  });
+    })) || [];
 
-  const existingChat = possibleChats.find((chat) => {
-    chat.users.length === 2 &&
-      chat.users.some((u) => u.id === userId) &&
-      chat.users.some((u) => u.id === friend.id);
-  });
+  let existingChat = chats.find((chat) => chat.users.length === 2);
+
+  console.log("test", chats);
 
   if (!existingChat) {
     await prisma.chat.create({

@@ -74,7 +74,7 @@ exports.addFriend = async (req, res, next) => {
     await db.addFriend(userId, friendEmail);
     res.status(200).json({ message: "Friend added" });
   } catch (err) {
-    return next(err);
+    return res.status(400).json({ error: err.message });
   }
 };
 

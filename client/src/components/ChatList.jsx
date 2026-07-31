@@ -4,10 +4,11 @@ import addUserIcon from "../assets/add-user.webp";
 import devProfileIcon from "../assets/devprofiles.jpg";
 import userProfileIcon from "../assets/user.svg";
 import { Spinner } from "./ui/spinner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Chat from "./Chat";
 
 function ChatList() {
+  const navigate = useNavigate();
   const { user, token } = useAuth();
   const [ChatList, setChatList] = useState([]);
   const [chatId, setChatId] = useState(null);
@@ -22,20 +23,19 @@ function ChatList() {
             `${import.meta.env.VITE_API_URL}/user/chats`,
             {
               headers: { Authorization: `Bearer ${token}` },
-            }
+            },
           );
-          if (response.ok) {
-            const data = await response.json();
-            setIsChatListLoading(false);
-            setChatList(data);
-            setChatId(data[0]?.id || null);
-          } else {
-            setIsChatListLoading(false);
+          if (!response.ok) {
             console.error("Failed to fetch user chats");
           }
+
+          const data = await response.json();
+          setChatList(data);
+          setChatId(data[0]?.id || null);
         } catch (error) {
-          setIsChatListLoading(false);
           console.error("Error fetching user chats:", error);
+        } finally {
+          setIsChatListLoading(false);
         }
       }
     };
@@ -51,30 +51,33 @@ function ChatList() {
     });
   };
 
-  const addFriend = async (friendName) => {
+  const addFriend = async (friendEmail) => {
     if (token) {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/user/friends/${friendName}`,
+          `${import.meta.env.VITE_API_URL}/user/friends/${friendEmail}`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ friendName }),
-          }
+            body: JSON.stringify({ friendEmail }),
+          },
         );
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Friend added successfully:", data);
-        } else {
-          console.error("Failed to add friend");
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to add friend");
         }
+
+        const data = await response.json();
+        console.log("Friend added successfully:", data);
+        alert("Friend added successfully");
       } catch (error) {
         console.error("Error adding friend:", error);
       }
     }
+    navigate(0);
   };
 
   const handleChatSelect = (chatId) => {
@@ -116,7 +119,7 @@ function ChatList() {
                         chat.name !== "One on One Chat"
                           ? devProfileIcon
                           : chat.users.find(
-                              (chatUser) => chatUser.id !== user.id
+                              (chatUser) => chatUser.id !== user.id,
                             )?.profile || userProfileIcon
                       }
                       alt="profile"
@@ -127,7 +130,7 @@ function ChatList() {
                         {chat.name !== "One on One Chat"
                           ? chat.name
                           : chat.users.find(
-                              (chatUser) => chatUser.id !== user.id
+                              (chatUser) => chatUser.id !== user.id,
                             )?.name || "Name"}
                       </p>
                       <div className="flex w-full items-center">
